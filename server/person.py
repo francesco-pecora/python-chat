@@ -1,4 +1,7 @@
 class Person:
+    """
+    Represents a user of the python chat, holds name, socket client, and IP address
+    """
     def __init__(self, addr, client):
         self.addr = addr
         self.client = client
@@ -9,3 +12,4 @@ class Person:
 
     def __repr__(self):
         return f"Person({self.addr}, {self.name})"
+        
