@@ -11,6 +11,7 @@ FORMAT = "utf8"
 # GLOBAL VARIABLES
 messages = []
 
+# creating internet socket
 client_socket = socket(AF_INET, SOCK_STREAM)
 client_socket.connect(ADDR)
 
@@ -22,7 +23,7 @@ def receive_messages():
     """
     while True:
         try:
-            msg = client_socket.recv(BUFSIZ).decode()
+            msg = client_socket.recv(BUFSIZ).decode(FORMAT)
             messages.append(msg)
             print(msg)
         except Exception as e:

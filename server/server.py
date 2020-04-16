@@ -37,8 +37,7 @@ def client_communication(person):
     :return:
     """
     client = person.client
-    # get persons name
-    name = client.recv(BUFSIZ).decode(FORMAT)
+    name = client.recv(BUFSIZ).decode(FORMAT)   # get persons name
     msg = bytes(f"{name} has joined the chat!", FORMAT)
     broadcast(msg, "")
 
@@ -54,7 +53,7 @@ def client_communication(person):
             else:
                 broadcast(msg, name)
         except Exception as e:
-            print("[EXCEPTION1]", e)
+            print("[EXCEPTION]", e)
 
 
 def wait_for_connection():
@@ -72,15 +71,15 @@ def wait_for_connection():
             print(f"[CONNECTION] {addr} connected to the server at {time.time()}")
             Thread(target=client_communication, args=(person,)).start()
         except Exception as e:
-            print("[EXCEPTION2]", e)
+            print("[EXCEPTION]", e)
             run = False
     print("[CRASHED] Server crashed...")
 
 
 if __name__ == "__main__":
-    SERVER.listen(MAX_CONNECTIONS)    # listen for connections
+    SERVER.listen(MAX_CONNECTIONS)                     # listen for connections
     print("[WAITING] Waiting for connection...")
-    ACCEPT_THREAD = Thread(target=wait_for_connection) # comma because need to pass a tuple
+    ACCEPT_THREAD = Thread(target=wait_for_connection)
     ACCEPT_THREAD.start()
     ACCEPT_THREAD.join()
     SERVER.close()
