@@ -1,53 +1,35 @@
-from socket import AF_INET, socket, SOCK_STREAM
+from client import Client
 from threading import Thread
 import time
 
-# GLOBAL CONSTANTS
-HOST = "localhost"
-PORT = 5050
-ADDR = (HOST, PORT)
-BUFSIZ = 512
-FORMAT = "utf8"
 
-# GLOBAL VARIABLES
-messages = []
+c1 = Client("Francesco")
+c2 = Client("Barbara")
 
-# creating internet socket
-client_socket = socket(AF_INET, SOCK_STREAM)
-client_socket.connect(ADDR)
-
-
-def receive_messages():
-    """
-    Receive messages from the server
-    :return: None
-    """
-    while True:
-        try:
-            msg = client_socket.recv(BUFSIZ).decode(FORMAT)
-            messages.append(msg)
+def update_messages():
+    msgs = []
+    run = True
+    while run:
+        time.sleep(0.1)
+        new_messages = c1.get_messages()
+        msgs.extend(new_messages)
+        for msg in new_messages:
             print(msg)
-        except Exception as e:
-            print("[EXCEPTION]", e)
-            break
+            if msg == "{quit}":
+                run = False
+                break
 
+Thread(target=update_messages).start()
 
-def send_message(msg):
-    """
-    Send messages to the server
-    :param msg: str
-    :return: None
-    """
-    client_socket.send(bytes(msg, FORMAT))
-    if msg == "{quit}":
-        client_socket.close()
+c1.send_message("Hello Barbara")
+time.sleep(5)
+c2.send_message("Hello Francesco")
+time.sleep(5)
+c1.send_message("How are you?")
+time.sleep(5)
+c2.send_message("I'm good")
+time.sleep(5)
 
-
-receive_thread = Thread(target=receive_messages)
-receive_thread.start()
-
-send_message("Francesco")
-time.sleep(10)
-send_message("Hello")
+c1.disconnect()
 time.sleep(2)
-send_message("{quit}")
+c2.disconnect()
