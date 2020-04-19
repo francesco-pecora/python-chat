@@ -1,8 +1,11 @@
 $(function(){
-    $('#test').bind('click', function(){
+    $('#sendBtn').bind('click', function(){
+        var value = document.getElementById("msg").value;
+        console.log(value);
         $.getJSON('/run',
+            {val:value},
             function(data){
-                // do nothing
+
             });
         return false;
     });
