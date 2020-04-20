@@ -51,7 +51,7 @@ class DataBase:
 
     
     def get_all_messages_by_name(self, name, limit=100):
-        self.get_all_messages(limit, name)
+        return self.get_all_messages(limit, name)
 
 
     def save_message(self, name, msg):
