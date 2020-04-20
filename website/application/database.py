@@ -3,7 +3,7 @@ from sqlite3 import Error
 from datetime import datetime
 import time
 
-
+# CONSTANTS
 FILE = "messages.db"
 PLAYLIST_TABLE = "Messages"
 
@@ -31,9 +31,14 @@ class DataBase:
         self.conn.commit()
 
     
-    def get_all_messages(self, limit=100):
-        query = f"SELECT * FROM {PLAYLIST_TABLE}"
-        self.cursor.execute(query)
+    def get_all_messages(self, limit=100, name=None):
+        if name:            
+            query = f"SELECT * FROM {PLAYLIST_TABLE} WHERE NAME = ?"
+            self.cursor.execute(query, (name,))
+        else:
+            query = f"SELECT * FROM {PLAYLIST_TABLE}"
+            self.cursor.execute(query)
+
         result = self.cursor.fetchall()
 
         results = []
@@ -45,6 +50,10 @@ class DataBase:
         return list(reversed(results))
 
     
+    def get_all_messages_by_name(self, name, limit=100):
+        self.get_all_messages(limit, name)
+
+
     def save_message(self, name, msg):
         query = f"INSERT INTO {PLAYLIST_TABLE} VALUES (?, ?, ?, ?)"
         self.cursor.execute(query, (name, msg, datetime.now(), None))
