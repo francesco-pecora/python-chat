@@ -22,7 +22,7 @@ const add_messages = async (msg, scroll) => {
     }
 
     if(scroll) scrollSmoothToBottom("messages");
-}
+};
 
 
 const load_name = async () => {
@@ -42,6 +42,7 @@ const load_messages = async () => {
             return await response.json();
         })
         .then((text) => {
+            console.log(text);
             return text;
         });
 };
