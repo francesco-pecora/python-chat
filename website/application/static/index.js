@@ -25,6 +25,9 @@ const add_messages = async (msg, scroll) => {
 };
 
 
+/**
+ * fetch request to retrieve the name of the user
+ */
 const load_name = async () => {
     return await fetch("/get_name")
         .then(async (response) => {
@@ -36,6 +39,9 @@ const load_name = async () => {
 };
 
 
+/**
+ * fetch request to retrieve the messages posted by the users
+ */
 const load_messages = async () => {
     return await fetch("/get_messages")
         .then(async (response) => {
@@ -47,6 +53,9 @@ const load_messages = async () => {
 };
 
 
+/**
+ * styling the window to 60% of the height of the browser window (higher than 60% creates a bug when the user is just logged in)
+ */
 $(function(){
     $(".msgs").css({"height": (($(window).height()) * 0.6) + "px"});
 
@@ -56,6 +65,10 @@ $(function(){
 });
 
 
+/**
+ * animation to scroll down through the messages in half a second (500 milliseconds)
+ * @param {str} id 
+ */
 const scrollSmoothToBottom = (id) => {
     var div = document.getElementById(id);
     $("#" + id).animate({
@@ -64,6 +77,9 @@ const scrollSmoothToBottom = (id) => {
 }
 
 
+/**
+ * returns the current date, hours, and minutes in the format desired
+ */
 const dateNow = () => {
     var date = new Date();
     var yyyy = date.getFullYear();
@@ -88,6 +104,10 @@ const dateNow = () => {
 
 var socket = io.connect("http://" + document.domain + ":" + location.port);
 
+
+/**
+ * handles user connection and message submission (plus broadcasting the message to all the users logged in)
+ */
 socket.on("connect", async () => {
     var user_name = await load_name();
     if (user_name != ""){
@@ -115,6 +135,7 @@ socket.on("connect", async () => {
     });
 });
 
+
 // socket.on( "disconnect", async (msg) => {
 //     var user_name = await load_name();
 //     socket.emit( "event", {
@@ -122,6 +143,11 @@ socket.on("connect", async () => {
 //     })
 // })
 
+
+/**
+ * when "message response" is sent from socket.emit, call add_messages (to update the messages just sent)
+ * @param {str} msg 
+ */
 socket.on("message response", (msg) => {
     add_messages(msg, true);
 });
