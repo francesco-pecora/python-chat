@@ -10,6 +10,9 @@ MSG_LIMIT = 20
 
 @view.route("/login", methods=["POST", "GET"])
 def login():
+    """
+    Adds user to the session and redirects to home.
+    """
     if request.method == "POST":
         name = request.form["inputName"]
         if len(name) >= 2:
@@ -24,6 +27,9 @@ def login():
 
 @view.route("/logout")
 def logout():
+    """
+    Removes the users from the session and redirects to the login page.
+    """
     session.pop(NAME_KEY, None)
     flash("0You were logged out.")
     return redirect(url_for("views.login"))
@@ -32,6 +38,9 @@ def logout():
 @view.route("/")
 @view.route("/home")
 def home():
+    """
+    Renders the home page. If the user is not registered, it redirects to the login page.
+    """
     if NAME_KEY not in session:
         return redirect(url_for("views.login"))
     
@@ -40,6 +49,9 @@ def home():
 
 @view.route("/history")
 def history():
+    """
+    If user is in the session, shows the history of all the messages sent by the user.
+    """
     if NAME_KEY not in session:
         flash("0Please login before viewing message history")
         return redirect(url_for("views.login"))
@@ -49,6 +61,10 @@ def history():
 
 @view.route("/get_name")
 def get_name():
+    """
+    Get the name of the user, if in the session
+    :return: Json
+    """
     data = {"name": ""}
     if NAME_KEY in session:
         data = {"name": session[NAME_KEY]}
@@ -57,6 +73,10 @@ def get_name():
 
 @view.route("/get_messages")
 def get_messages():
+    """
+    Get the messages from the database
+    :return: Json
+    """
     db = DataBase()
     msgs = db.get_all_messages(MSG_LIMIT)
     messages = remove_seconds_from_messages(msgs)
@@ -66,6 +86,10 @@ def get_messages():
 
 @view.route("/get_history")
 def get_history(name):
+    """
+    Get the messages from only one user.
+    :return: []
+    """
     db = DataBase()
     msgs = db.get_all_messages_by_name(name)
     messages = remove_seconds_from_messages(msgs)
@@ -74,6 +98,11 @@ def get_history(name):
 
 
 def remove_seconds_from_messages(msgs):
+    """
+    Loops through the messages and removes the seconds
+    :param msgs: []
+    :return: []
+    """
     messages = []
     for msg in msgs:
         message = msg
@@ -83,4 +112,9 @@ def remove_seconds_from_messages(msgs):
     return messages
 
 def remove_seconds(msg):
+    """
+    Removes seconds from a single message
+    :param msg: {}
+    :return: string
+    """
     return msg.split(".")[0][:-3]
