@@ -17,7 +17,7 @@ def login():
             flash(f"You were successfully logged in as {name}.")
             return redirect(url_for("views.home"))
         else:
-            flash("Name must be longer than 1 character.")
+            flash("1Name must be longer than 1 character.")
         
     return render_template("login.html", **{"session": "session"})
 
@@ -25,7 +25,7 @@ def login():
 @view.route("/logout")
 def logout():
     session.pop(NAME_KEY, None)
-    flash("You were logged out.")
+    flash("0You were logged out.")
     return redirect(url_for("views.login"))
 
 
@@ -39,12 +39,12 @@ def home():
 
 
 @view.route("/history")
-def history(name):
+def history():
     if NAME_KEY not in session:
-        flash("Please login before viewing message history")
+        flash("0Please login before viewing message history")
         return redirect(url_for("views.login"))
     json_messages = get_history(session[NAME_KEY])
-    return render_template("history.html", history=json_messages)
+    return render_template("history.html", **{"history": json_messages})
 
 
 @view.route("/get_name")
@@ -70,7 +70,7 @@ def get_history(name):
     msgs = db.get_all_messages_by_name(name)
     messages = remove_seconds_from_messages(msgs)
 
-    return jsonify(messages)
+    return messages
 
 
 def remove_seconds_from_messages(msgs):
