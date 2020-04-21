@@ -14,7 +14,7 @@ const add_messages = async (msg, scroll) => {
         // personal message is displayed darker and on the left
         var content = "<div class='container'>" + "<b style='color:#000' class='right'>" + msg.name + "</b><p>" + msg.message + "</p>";
         if(global_name === msg.name){
-            content = "<div class='container darker'>" + "<b style='color:#000' class='left'>" + msg.name + "</b><p>" + msg.message + "</p>";
+            content = "<div class='container darker'>" + "<b style='color:#000' class='left'>" + msg.name + "</b><p>" + msg.message + "</p><span class='time-left'>" + msg.time + "</span>";
         }
 
         var messageDiv = document.getElementById("messages");
@@ -42,17 +42,16 @@ const load_messages = async () => {
             return await response.json();
         })
         .then((text) => {
-            console.log(text);
             return text;
         });
 };
 
 
 $(function(){
-    $("#msgs").css({"height": (($(window).height()) * 0.7) + "px"});
+    $(".msgs").css({"height": (($(window).height()) * 0.6) + "px"});
 
     $(window).bind("resize", () => {
-        $("#msgs").css({"height": (($(window).height()) * 0.7) + "px"});
+        $(".msgs").css({"height": (($(window).height()) * 0.6) + "px"});
     });
 });
 
@@ -85,7 +84,7 @@ const dateNow = () => {
     if (seconds < 10) seconds = "0" + seconds;
 
     return current_day + " " + hours + ":" + minutes;
-}
+};
 
 var socket = io.connect("http://" + document.domain + ":" + location.port);
 
@@ -95,10 +94,10 @@ socket.on("connect", async () => {
         socket.emit("event", {
             message: user_name + " just connected to the server!",
             connect: true
-        })
+        });
     }
     var form = $( "form#msgForm" ).on( "submit", async (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         // input from message box
         let msg_input = document.getElementById("msg");
@@ -112,33 +111,31 @@ socket.on("connect", async () => {
         socket.emit( "event", {
             message: user_input,
             name: usr_name
-        })
-    })
-})
+        });
+    });
+});
 
-socket.on( "disconnect", async (msg) => {
-    var user_name = await load_name();
-    socket.emit( "event", {
-        message: user_name + " just left the server...",
-        name: user_name
-    })
-})
+// socket.on( "disconnect", async (msg) => {
+//     var user_name = await load_name();
+//     socket.emit( "event", {
+//         message: user_name + " just left the server...",
+//     })
+// })
 
 socket.on("message response", (msg) => {
     add_messages(msg, true);
-})
+});
 
 
 window.onload = async () => {
     var msgs = await load_messages();
     for (i = 0; i < msgs.length; i++){
         scroll = false;
-        if (i == msgs.length - 1) scroll = true;
+        if (i === msgs.length - 1) scroll = true;
         add_messages(msgs[i], scroll);
     }
 
     let name = await load_name();
     if (name !== "") $("#login").hide();
     else $("#logout").hide();
-}
-
+};
