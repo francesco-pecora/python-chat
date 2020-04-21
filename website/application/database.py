@@ -41,6 +41,7 @@ class DataBase:
 
         result = self.cursor.fetchall()
 
+        # returns messages in sorted order by date
         results = []
         for item in sorted(result, key=lambda x: x[3], reverse=True)[:limit]:
             name, content, date, _id = item
